@@ -166,3 +166,12 @@ resource "aws_security_group_rule" "eks_cluster_ingress_bastion" {
   description              = "Allow bastion host to communicate with the cluster API Server"
 }
 
+
+module "argocd" {
+  source            = "./modules/argocd"
+  vpc_id            = module.vpc.vpc_id
+  public_subnet_ids = module.vpc.public_subnets
+  cluster_name      = module.eks.cluster_name
+
+  depends_on = [module.eks]
+}
