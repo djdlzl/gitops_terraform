@@ -31,7 +31,7 @@ resource "aws_lb" "argocd" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.argocd_lb.id]
-  subnets            = var.public_subnet_ids
+  subnets            = slice(var.public_subnet_ids, 0, 2)  # 최대 2개의 서브넷만 사용
 
   enable_deletion_protection = false
 }

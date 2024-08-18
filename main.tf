@@ -112,7 +112,6 @@ module "security_groups" {
   vpc_cidr                    = var.vpc_cidr
   cluster_security_group_id   = module.eks.cluster_security_group_id
   bastion_security_group_id   = module.bastion.bastion_security_group_id
-  create_bastion_ingress_rule = true
 }
 # ECR 모듈 호출
 module "ecr" {
@@ -156,15 +155,6 @@ module "bastion" {
   region        = var.region
 }
 
-resource "aws_security_group_rule" "eks_cluster_ingress_bastion" {
-  type                     = "ingress"
-  from_port                = 443
-  to_port                  = 443
-  protocol                 = "tcp"
-  security_group_id        = module.eks.cluster_security_group_id
-  source_security_group_id = module.bastion.bastion_security_group_id
-  description              = "Allow bastion host to communicate with the cluster API Server"
-}
 
 
 module "argocd" {
