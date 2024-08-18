@@ -2,7 +2,6 @@
 resource "aws_iam_role" "eks_cluster" {
   name = "${var.cluster_name}-cluster"
 
-  # EKS 서비스가 이 역할을 맡을 수 있도록 신뢰 관계 설정
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -23,11 +22,16 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
   role       = aws_iam_role.eks_cluster.name
 }
 
+# VPC 리소스 컨트롤러 정책 연결
+resource "aws_iam_role_policy_attachment" "eks_vpc_resource_controller" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+  role       = aws_iam_role.eks_cluster.name
+}
+
 # EKS 노드 그룹을 위한 IAM 역할 생성
 resource "aws_iam_role" "eks_node_group" {
   name = "${var.cluster_name}-node-group"
 
-  # EC2 서비스가 이 역할을 맡을 수 있도록 신뢰 관계 설정
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

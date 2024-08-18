@@ -30,17 +30,50 @@ variable "cluster_name" {
 
 # EKS 클러스터 버전 설정
 variable "cluster_version" {
-  default = "1.27"
+  default = "1.30"
 }
+
 
 # EKS 노드 그룹 설정
 variable "node_groups" {
+  description = "Map of EKS managed node group definitions to create"
+  type = map(object({
+    name           = string
+    instance_types = list(string)
+    min_size       = number
+    max_size       = number
+    desired_size   = number
+    disk_size      = number
+  }))
   default = {
-    example = {
-      desired_capacity = 2
-      max_capacity     = 3
-      min_capacity     = 1
-      instance_type    = "t3.medium"
+    eks_node_gitops = {
+      name           = "eks_node_gitops"
+      instance_types = ["t3.medium"]
+      min_size       = 1
+      max_size       = 3
+      desired_size   = 2
+      disk_size      = 20
     }
   }
+}
+# aws-auth ConfigMap에 추가할 IAM 역할 목록
+variable "aws_auth_roles" {
+  description = "List of role maps to add to the aws-auth configmap"
+  type = list(object({
+    rolearn  = string
+    username = string
+    groups   = list(string)
+  }))
+  default = []
+}
+
+# aws-auth ConfigMap에 추가할 IAM 사용자 목록
+variable "aws_auth_users" {
+  description = "List of user maps to add to the aws-auth configmap"
+  type = list(object({
+    userarn  = string
+    username = string
+    groups   = list(string)
+  }))
+  default = []
 }

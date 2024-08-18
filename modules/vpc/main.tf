@@ -1,7 +1,7 @@
 # VPC 모듈 사용
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "5.0.0"
+  version = "~> 5.0"  # 최신 주 버전으로 업데이트
 
   name                 = "${var.cluster_name}-vpc"
   cidr                 = var.vpc_cidr
