@@ -22,9 +22,22 @@ resource "aws_security_group" "bastion" {
     Name = "${var.cluster_name}-bastion-sg"
   }
 }
+data "aws_ami" "ubuntu_22_04" {
+  most_recent = true
+  owners      = ["099720109477"] # Canonical
 
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
 resource "aws_instance" "bastion" {
-  ami           = var.ami_id
+  ami           = data.aws_ami.ubuntu_22_04.id
   instance_type = var.instance_type
   key_name      = var.key_name
 
@@ -39,13 +52,16 @@ resource "aws_instance" "bastion" {
 
   user_data = <<-EOF
               #!/bin/bash
-              yum update -y
-              yum install -y kubectl
-              aws eks get-token --cluster-name ${var.cluster_name} | kubectl apply -f -
+              apt-get update
+              apt-get install -y awscli
+              snap install kubectl --classic
+              curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+              chmod +x kubectl
+              mv kubectl /usr/local/bin/
+              aws eks get-token --cluster-name ${var.cluster_name} --region ${var.region} | kubectl apply -f -
               aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.region}
               EOF
 }
-
 resource "aws_iam_role" "bastion" {
   name = "${var.cluster_name}-bastion-role"
 

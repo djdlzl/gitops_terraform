@@ -63,6 +63,7 @@ resource "aws_security_group_rule" "cluster_ingress_node_https" {
 
 # 베스천 호스트에서 클러스터 API 서버로의 접근 허용
 resource "aws_security_group_rule" "cluster_ingress_bastion_https" {
+  count                    = var.create_bastion_ingress_rule ? 1 : 0
   description              = "Allow bastion host to communicate with the cluster API Server"
   from_port                = 443
   protocol                 = "tcp"

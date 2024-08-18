@@ -104,15 +104,16 @@ locals {
 }
 data "aws_caller_identity" "current" {}
 # Security Group 모듈 사용
-module "security_groups" {
-  source                    = "./modules/security_groups"
-  vpc_id                    = module.vpc.vpc_id
-  cluster_name              = var.cluster_name
-  vpc_cidr                  = var.vpc_cidr
-  cluster_security_group_id = module.eks.cluster_security_group_id
-  bastion_security_group_id = module.bastion.bastion_security_group_id
-}
 
+module "security_groups" {
+  source                      = "./modules/security_groups"
+  vpc_id                      = module.vpc.vpc_id
+  cluster_name                = var.cluster_name
+  vpc_cidr                    = var.vpc_cidr
+  cluster_security_group_id   = module.eks.cluster_security_group_id
+  bastion_security_group_id   = module.bastion.bastion_security_group_id
+  create_bastion_ingress_rule = true
+}
 # ECR 모듈 호출
 module "ecr" {
   source          = "./modules/ecr"
@@ -124,7 +125,11 @@ resource "null_resource" "generate_kubeconfig" {
   depends_on = [module.eks]
 
   provisioner "local-exec" {
-    command = "aws eks get-token --cluster-name ${module.eks.cluster_name} | kubectl apply -f - && aws eks update-kubeconfig --name ${module.eks.cluster_name} --region ${var.region}"
+    command = <<-EOT
+      aws eks wait cluster-active --name ${var.cluster_name} --region ${var.region}
+      aws eks get-token --cluster-name ${var.cluster_name} --region ${var.region}
+      aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.region}
+    EOT
   }
 }
 
@@ -160,3 +165,4 @@ resource "aws_security_group_rule" "eks_cluster_ingress_bastion" {
   source_security_group_id = module.bastion.bastion_security_group_id
   description              = "Allow bastion host to communicate with the cluster API Server"
 }
+
