@@ -12,3 +12,8 @@ output "bastion_iam_instance_profile_arn" {
   value       = aws_iam_instance_profile.bastion.arn
   description = "ARN of the IAM instance profile attached to the bastion host"
 }
+
+output "bastion_role_arn" {
+  description = "ARN of the IAM role attached to the bastion host"
+  value       = aws_iam_role.bastion.arn
+}

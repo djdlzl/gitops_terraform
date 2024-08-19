@@ -81,8 +81,8 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
           groups   = ["system:bootstrappers", "system:nodes"]
         }],
         [{
-          rolearn  = module.bastion.bastion_iam_instance_profile_arn
-          username = "system:node:{{EC2PrivateDNSName}}"
+          rolearn  = module.bastion.bastion_role_arn
+          username = "system:bastion-admin"
           groups   = ["system:masters"]
         }],
         var.aws_auth_roles
@@ -120,29 +120,29 @@ module "ecr" {
 }
 
 
-resource "null_resource" "generate_kubeconfig" {
-  depends_on = [module.eks]
+# resource "null_resource" "generate_kubeconfig" {
+#   depends_on = [module.eks]
 
-  provisioner "local-exec" {
-    command = <<-EOT
-      aws eks wait cluster-active --name ${var.cluster_name} --region ${var.region}
-      aws eks get-token --cluster-name ${var.cluster_name} --region ${var.region}
-      aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.region}
-    EOT
-  }
-}
+#   provisioner "local-exec" {
+#     command = <<-EOT
+#       aws eks wait cluster-active --name ${var.cluster_name} --region ${var.region}
+#       aws eks get-token --cluster-name ${var.cluster_name} --region ${var.region}
+#       aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.region}
+#     EOT
+#   }
+# }
 
-resource "null_resource" "update_kubeconfig" {
-  depends_on = [module.eks]
+# resource "null_resource" "update_kubeconfig" {
+#   depends_on = [module.eks]
 
-  provisioner "local-exec" {
-    command = <<-EOT
-      aws eks wait cluster-active --name ${var.cluster_name} --region ${var.region}
-      aws eks get-token --cluster-name ${var.cluster_name} --region ${var.region}
-      aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.region}
-    EOT
-  }
-}
+#   provisioner "local-exec" {
+#     command = <<-EOT
+#       aws eks wait cluster-active --name ${var.cluster_name} --region ${var.region}
+#       aws eks get-token --cluster-name ${var.cluster_name} --region ${var.region}
+#       aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.region}
+#     EOT
+#   }
+# }
 
 module "bastion" {
   source = "./modules/bastion"
