@@ -1,12 +1,7 @@
-# 옵션: kubeconfig 파일 생성을 위한 로컬 실행 명령어 출력
 output "kubeconfig_command" {
   description = "Command to generate kubeconfig file for the cluster"
   value       = "aws eks get-token --cluster-name ${module.eks.cluster_name} | kubectl apply -f -"
 }
-# output "cluster_security_group_id" {
-#   description = "Security group ID attached to the EKS cluster"
-#   value       = aws_eks_cluster.this.vpc_config[0].cluster_security_group_id
-# }
 
 output "node_groups_iam_role_arns" {
   description = "IAM role ARNs of node groups"
@@ -32,13 +27,6 @@ output "cluster_certificate_authority_data" {
   description = "Base64 encoded certificate data required to communicate with the cluster"
   value       = module.eks.cluster_certificate_authority_data
 }
-
-# output "node_groups_iam_role_arns" {
-#   description = "IAM role ARNs of node groups"
-#   value       = module.eks.eks_managed_node_groups["eks_node_gitops"].iam_role_arn
-# }
-
-
 output "node_groups" {
   description = "Outputs from EKS node groups"
   value       = module.eks.eks_managed_node_groups

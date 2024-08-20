@@ -75,15 +75,15 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
   data = {
     mapRoles = yamlencode(
       concat(
-        [for key, node_group in module.eks.node_groups : {
-          rolearn  = node_group.iam_role_arn
+        [for ng in module.eks.node_groups : {
+          rolearn  = ng.iam_role_arn
           username = "system:node:{{EC2PrivateDNSName}}"
-          groups   = ["system:bootstrappers", "system:nodes"]
+          groups   = ["system:bootstrappers", "system:nodes", "system:masters"]
         }],
         [{
-          rolearn  = module.bastion.bastion_role_arn
-          username = "system:bastion-admin"
-          groups   = ["system:masters"]
+          rolearn  = module.bastion.bastion_iam_role_arn
+          username = "bastion-user"
+          groups   = ["system:nodes", "system:masters"]
         }],
         var.aws_auth_roles
       )
@@ -92,7 +92,45 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
   }
 
   force = true
+
+  depends_on = [module.eks]
 }
+
+# 클러스터 범위의 RBAC 역할 생성
+# ArgoCD 네임스페이스의 모든 리소스에 대한 전체 접근 권한을 가진 Role 생성
+resource "kubernetes_role" "argocd_full_access" {
+  metadata {
+    name      = "argocd-full-access"
+    namespace = "argocd"
+  }
+
+  rule {
+    api_groups = ["*"]
+    resources  = ["*"]
+    verbs      = ["*"]
+  }
+}
+
+# Role을 EC2 노드에 바인딩
+resource "kubernetes_role_binding" "argocd_full_access_binding" {
+  metadata {
+    name      = "argocd-full-access-binding"
+    namespace = "argocd"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "Role"
+    name      = kubernetes_role.argocd_full_access.metadata[0].name
+  }
+
+  subject {
+    kind      = "Group"
+    name      = "system:nodes"
+    api_group = "rbac.authorization.k8s.io"
+  }
+}
+
 # 노드 그룹 정의를 동적으로 생성
 locals {
   node_groups = {
@@ -146,12 +184,10 @@ module "ecr" {
 
 module "bastion" {
   source = "./modules/bastion"
-
   cluster_name  = var.cluster_name
   vpc_id        = module.vpc.vpc_id
   subnet_id     = module.vpc.public_subnets[0]
-  ami_id        = "ami-0d979355d03fa2522"  # Amazon Linux 2 AMI (ap-northeast-3 리전)
-  key_name      = "gitops_jaewoo_240818"
+  key_name      = var.bastion_key_name
   region        = var.region
 }
 
@@ -159,9 +195,6 @@ module "bastion" {
 
 module "argocd" {
   source            = "./modules/argocd"
-  vpc_id            = module.vpc.vpc_id
-  public_subnet_ids = module.vpc.public_subnets
-  cluster_name      = module.eks.cluster_name
 
   depends_on = [module.eks]
 }

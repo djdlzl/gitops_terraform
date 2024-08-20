@@ -77,3 +77,10 @@ variable "aws_auth_users" {
   }))
   default = []
 }
+
+
+variable "bastion_key_name" {
+  description = "The key name of the Key Pair to use for the bastion instance"
+  type        = string
+  default     = "gitops_jaewoo_240818"
+}

@@ -2,17 +2,9 @@ server:
   service:
     type: LoadBalancer
   ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: nginx
-      cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    hosts:
-      - argocd.yourdomain.com
-    tls:
-      - secretName: argocd-server-tls
-        hosts:
-          - argocd.yourdomain.com
-
-configs:
-  secret:
-    argocdServerAdminPassword: "$2a$10$example_hash_replace_with_your_own"
+    enabled: false
+  config:
+    url: ""
+# configs:
+#   secret:
+#     argocdServerAdminPassword: "${admin_password}"

@@ -5,20 +5,11 @@ variable "namespace" {
 
 variable "argocd_version" {
   description = "Version of ArgoCD Helm chart"
-  default     = "3.35.4"
+  default     = "5.51.0"
 }
 
-variable "vpc_id" {
-  description = "VPC ID where ArgoCD will be deployed"
-  type        = string
+variable "admin_password" {
+  description = "ArgoCD admin password"
+  default     = "It12341!"
 }
 
-variable "public_subnet_ids" {
-  description = "List of public subnet IDs for the load balancer"
-  type        = list(string)
-}
-
-variable "cluster_name" {
-  description = "Name of the EKS cluster"
-  type        = string
-}
