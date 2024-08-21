@@ -5,6 +5,3 @@ server:
     enabled: false
   config:
     url: ""
-# configs:
-#   secret:
-#     argocdServerAdminPassword: "${admin_password}"
