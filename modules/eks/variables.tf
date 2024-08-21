@@ -45,10 +45,3 @@ variable "aws_auth_roles" {
   type        = list(any)
   default     = []
 }
-
-variable "fargate_profiles" {
-  description = "Map of Fargate Profile definitions to create"
-  type        = any
-  default     = {}
-}
-

@@ -33,6 +33,10 @@ variable "cluster_version" {
   default = "1.30"
 }
 
+variable "namespace" {
+  default = "petclinic"
+}
+
 
 # EKS 노드 그룹 설정
 variable "node_groups" {
@@ -84,3 +88,5 @@ variable "bastion_key_name" {
   type        = string
   default     = "gitops_jaewoo_240818"
 }
+
+

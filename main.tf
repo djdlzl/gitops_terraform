@@ -141,32 +141,6 @@ module "ecr" {
   source          = "./modules/ecr"
   repository_name = "${var.cluster_name}-repo"
 }
-
-
-# resource "null_resource" "generate_kubeconfig" {
-#   depends_on = [module.eks]
-
-#   provisioner "local-exec" {
-#     command = <<-EOT
-#       aws eks wait cluster-active --name ${var.cluster_name} --region ${var.region}
-#       aws eks get-token --cluster-name ${var.cluster_name} --region ${var.region}
-#       aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.region}
-#     EOT
-#   }
-# }
-
-# resource "null_resource" "update_kubeconfig" {
-#   depends_on = [module.eks]
-
-#   provisioner "local-exec" {
-#     command = <<-EOT
-#       aws eks wait cluster-active --name ${var.cluster_name} --region ${var.region}
-#       aws eks get-token --cluster-name ${var.cluster_name} --region ${var.region}
-#       aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.region}
-#     EOT
-#   }
-# }
-
 module "bastion" {
   source = "./modules/bastion"
   cluster_name  = var.cluster_name
@@ -175,9 +149,6 @@ module "bastion" {
   key_name      = var.bastion_key_name
   region        = var.region
 }
-
-
-
 module "argocd" {
   source            = "./modules/argocd"
 

@@ -14,22 +14,14 @@ sudo curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/
 sudo chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
 
-echo "Installing aws-iam-authenticator"
-sudo curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
-sudo chmod +x aws-iam-authenticator
-sudo mv aws-iam-authenticator /usr/local/bin/
-
 echo "Configuring AWS CLI"
 mkdir -p /home/ubuntu/.aws
 echo "[default]" > /home/ubuntu/.aws/config
 echo "region = ${region}" >> /home/ubuntu/.aws/config
 
-sleep 30
-
 echo "Configuring kubeconfig"
 aws eks get-token --cluster-name ${cluster_name} --region ${region}
 aws eks update-kubeconfig --name ${cluster_name} --region ${region}
-
 
 echo "Setting permissions"
 chown -R ubuntu:ubuntu /home/ubuntu/.kube /home/ubuntu/.aws
