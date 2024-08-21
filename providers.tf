@@ -1,3 +1,6 @@
+# 프로바이더 설정
+# 프로바이더는 특정 인프라 제공자(예: AWS)와 상호 작용하는 방법을 Terraform에 알려줍니다.
+
 terraform {
   required_providers {
     aws = {

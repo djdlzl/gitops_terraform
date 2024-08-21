@@ -9,6 +9,3 @@ output "private_subnets" {
 output "public_subnets" {
   value = module.vpc.public_subnets
 }
-# output "public_subnet_ids" {
-#   value = module.vpc.public_subnets
-# }

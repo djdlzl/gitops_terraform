@@ -19,8 +19,8 @@ echo "[default]" > /home/ubuntu/.aws/config
 echo "region = ap-northeast-3" >> /home/ubuntu/.aws/config
 
 echo "Configuring kubeconfig"
-aws eks get-token --cluster-name gitops --region ap-northeast-3
-aws eks update-kubeconfig --name gitops --region ap-northeast-3
+aws eks get-token --cluster-name gitops2 --region ap-northeast-3
+aws eks update-kubeconfig --name gitops2 --region ap-northeast-3
 
 echo "Setting permissions"
 chown -R ubuntu:ubuntu /home/ubuntu/.kube /home/ubuntu/.aws

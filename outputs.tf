@@ -16,8 +16,3 @@ output "ecr_repository_url" {
   description = "The URL of the ECR repository"
   value       = module.ecr.repository_url
 }
-
-output "bastion_public_ip" {
-  value       = module.bastion.bastion_public_ip
-  description = "Public IP of the bastion host"
-}

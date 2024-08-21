@@ -13,7 +13,6 @@ variable "subnet_id" {
   type        = string
 }
 
-
 variable "instance_type" {
   description = "Instance type for the bastion host"
   type        = string
@@ -28,4 +27,8 @@ variable "key_name" {
 variable "region" {
   description = "AWS region"
   type        = string
+}
+
+variable "create_instance_profile" {
+  default = false
 }

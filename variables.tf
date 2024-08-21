@@ -1,44 +1,38 @@
-# AWS 리전 설정
+# 변수 정의
+# 이 변수들은 인프라 구성을 유연하게 만들어 줍니다.
+
 variable "region" {
-  default = "ap-northeast-3"
+  default = "ap-northeast-3"  # AWS 리전 설정
 }
 
-# VPC CIDR 블록 설정
 variable "vpc_cidr" {
-  default = "10.0.0.0/16"
+  default = "10.0.0.0/16"     # VPC의 CIDR 블록
 }
 
-# 가용 영역 설정
 variable "azs" {
-  default = ["ap-northeast-3a", "ap-northeast-3c"]
+  default = ["ap-northeast-3a", "ap-northeast-3c"]  # 사용할 가용 영역
 }
 
-# 프라이빗 서브넷 CIDR 블록 설정
 variable "private_subnets" {
-  default = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  default = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]  # 프라이빗 서브넷 CIDR
 }
 
-# 퍼블릭 서브넷 CIDR 블록 설정
 variable "public_subnets" {
-  default = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+  default = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]  # 퍼블릭 서브넷 CIDR
 }
 
-# EKS 클러스터 이름 설정
 variable "cluster_name" {
-  default = "gitops"
+  default = "gitops2"  # EKS 클러스터 이름
 }
 
-# EKS 클러스터 버전 설정
 variable "cluster_version" {
-  default = "1.30"
+  default = "1.30"    # EKS 클러스터 버전
 }
 
 variable "namespace" {
-  default = "petclinic"
+  default = "petclinic"  # 기본 네임스페이스 설정
 }
 
-
-# EKS 노드 그룹 설정
 variable "node_groups" {
   description = "Map of EKS managed node group definitions to create"
   type = map(object({
@@ -60,7 +54,7 @@ variable "node_groups" {
     }
   }
 }
-# aws-auth ConfigMap에 추가할 IAM 역할 목록
+
 variable "aws_auth_roles" {
   description = "List of role maps to add to the aws-auth configmap"
   type = list(object({
@@ -71,7 +65,6 @@ variable "aws_auth_roles" {
   default = []
 }
 
-# aws-auth ConfigMap에 추가할 IAM 사용자 목록
 variable "aws_auth_users" {
   description = "List of user maps to add to the aws-auth configmap"
   type = list(object({
@@ -82,11 +75,8 @@ variable "aws_auth_users" {
   default = []
 }
 
-
 variable "bastion_key_name" {
   description = "The key name of the Key Pair to use for the bastion instance"
   type        = string
   default     = "gitops_jaewoo_240818"
 }
-
-
