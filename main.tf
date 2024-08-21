@@ -49,23 +49,9 @@ module "eks" {
 
   aws_auth_roles = var.aws_auth_roles
   aws_auth_users = var.aws_auth_users
-
-  fargate_profiles = {
-    default = {
-      name = "default"
-      selectors = [
-        {
-          namespace = "kube-system"
-        },
-        {
-          namespace = "default"
-        }
-      ]
-    }
-  }
 }
 
-# Move aws_auth ConfigMap management here
+# aws_auth configMap 설정 - kubectl 접근 권한
 resource "kubernetes_config_map_v1_data" "aws_auth" {
   metadata {
     name      = "aws-auth"
@@ -92,12 +78,9 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
   }
 
   force = true
-
-  depends_on = [module.eks]
 }
 
-# 클러스터 범위의 RBAC 역할 생성
-# ArgoCD 네임스페이스의 모든 리소스에 대한 전체 접근 권한을 가진 Role 생성
+# 클러스터 범위의 RBAC 역할 생성 - k8s 내 모든 리소스 접근 권한
 resource "kubernetes_role" "argocd_full_access" {
   metadata {
     name      = "argocd-full-access"
@@ -109,6 +92,7 @@ resource "kubernetes_role" "argocd_full_access" {
     resources  = ["*"]
     verbs      = ["*"]
   }
+  depends_on = [module.eks]
 }
 
 # Role을 EC2 노드에 바인딩
@@ -129,6 +113,7 @@ resource "kubernetes_role_binding" "argocd_full_access_binding" {
     name      = "system:nodes"
     api_group = "rbac.authorization.k8s.io"
   }
+  depends_on = [module.eks, kubernetes_role.argocd_full_access]
 }
 
 # 노드 그룹 정의를 동적으로 생성

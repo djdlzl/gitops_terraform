@@ -52,10 +52,10 @@ resource "aws_instance" "bastion" {
     Name = "${var.cluster_name}-bastion"
   }
 
-  user_data = templatefile("${path.module}/user_data.tpl", {
-    region       = var.region
-    cluster_name = var.cluster_name
-  })
+  # user_data = templatefile("${path.module}/user_data.tpl", {
+  #   region       = var.region
+  #   cluster_name = var.cluster_name
+  # })
   
   iam_instance_profile = aws_iam_instance_profile.bastion.name
 }

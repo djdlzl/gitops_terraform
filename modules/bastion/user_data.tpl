@@ -24,7 +24,7 @@ mkdir -p /home/ubuntu/.aws
 echo "[default]" > /home/ubuntu/.aws/config
 echo "region = ${region}" >> /home/ubuntu/.aws/config
 
-sleep 10
+sleep 30
 
 echo "Configuring kubeconfig"
 aws eks get-token --cluster-name ${cluster_name} --region ${region}
