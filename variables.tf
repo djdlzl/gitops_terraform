@@ -5,6 +5,10 @@ variable "region" {
   default = "ap-northeast-3"  # AWS 리전 설정
 }
 
+variable "cluster_name" {
+  default = "gitops3"  # EKS 클러스터 이름
+}
+
 variable "vpc_cidr" {
   default = "10.0.0.0/16"     # VPC의 CIDR 블록
 }
@@ -21,9 +25,6 @@ variable "public_subnets" {
   default = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]  # 퍼블릭 서브넷 CIDR
 }
 
-variable "cluster_name" {
-  default = "gitops2"  # EKS 클러스터 이름
-}
 
 variable "cluster_version" {
   default = "1.30"    # EKS 클러스터 버전

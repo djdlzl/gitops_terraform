@@ -16,7 +16,6 @@ resource "helm_release" "argocd" {
   namespace  = kubernetes_namespace.argocd.metadata[0].name
   values = [
     templatefile("${path.module}/values.yaml", {
-      admin_password = var.admin_password
     })
   ]
   depends_on = [kubernetes_namespace.argocd]
