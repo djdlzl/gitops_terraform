@@ -77,7 +77,7 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
         }],
         [{
           rolearn  = module.bastion.bastion_iam_role_arn
-          username = "bastion-user"
+          username = "system:node:{{EC2PrivateDNSName}}"
           groups   = ["system:nodes", "system:masters"]
         }],
         var.aws_auth_roles
