@@ -6,7 +6,7 @@ variable "region" {
 }
 
 variable "cluster_name" {
-  default = "gitops3"  # EKS 클러스터 이름
+  default = "gitops6"  # EKS 클러스터 이름
 }
 
 variable "vpc_cidr" {
@@ -18,11 +18,11 @@ variable "azs" {
 }
 
 variable "private_subnets" {
-  default = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]  # 프라이빗 서브넷 CIDR
+  default = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24", "10.0.4.0/24"]  # 프라이빗 서브넷 CIDR
 }
 
 variable "public_subnets" {
-  default = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]  # 퍼블릭 서브넷 CIDR
+  default = [ "10.0.5.0/24", "10.0.6.0/24"]  # 퍼블릭 서브넷 CIDR
 }
 
 
